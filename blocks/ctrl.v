@@ -174,20 +174,20 @@ module ctrl(
 				
 				`ALU: begin
 					
-					if(inst[14:12] == 3'b001 || inst[31:12] == 3'b101) begin
-						//Shift instruction
+					if(inst[14:12] == 3'b010 || inst[14:12] == 3'b011) begin
+						//Instructions that involve subtract operation
 						//ALU control signal
 						//set LSB 3 bits to the "funct3" field
-						//bit 3 = inst[30] (to distinguish between arithmetic and logical shift)
+						//bit 3 = 1'b1 to indicate stubract operation
 						//bit 4 = 0 (no branching)
-						alu_ctrl = {1'b0, inst[30], inst[14:12]};
+						alu_ctrl = {1'b0, 1'b1, inst[14:12]};
 					end
 					
 					else begin
 						//Other ALU instruction
 						//ALU control signal
-						//set the alu_ctrl signal to {1'b0, "funct3"}
-						//bit3 = 1'b0, no subtract instructions (I-type)
+						//set the alu_ctrl signal to {2'b00, "funct3"}
+						//bit3 = 1'b0, no subtract operation
 						//MSB (bit 4) = 1'b0, no branching
 						alu_ctrl = {2'b00, inst[14:12]};
 					end
@@ -255,10 +255,10 @@ module ctrl(
 				//SB-type
 				`BRANCH: begin
 					//ALU control signal
-					//set the alu_ctrl signal to {1'b0, "funct3"}
+					//set the alu_ctrl signal to {1'b1, 1'b0, "funct3"}
 					//bit3 = 1'b0, no subtract instructions (I-type)
-					//MSB (bit 4) = 1'b0, no branching
-					alu_ctrl = {(`ALU_CTRL_WIDTH){1'b0}};
+					//MSB (bit 4) = 1'b1, branch
+					alu_ctrl = {1'b1, 1'b0, inst[14:12]};
 					//Register file write enable signal
 					//no write to register file
 					reg_file_wr_en = 1'b0;
@@ -267,8 +267,8 @@ module ctrl(
 					//don't care
 					reg_file_wr_back_sel = 2'bxx;
 					//ALU operand select signal
-					//select the sign or zero extended immediate value
-					alu_op2_sel = 1'b1;
+					//select the operand obtained from register file
+					alu_op2_sel = 1'b0;
 					//Data memory read enable signal
 					//no data is read from data memory
 					d_mem_rd_en = 1'b0;
