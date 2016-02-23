@@ -175,7 +175,7 @@ module ctrl(
 				`ALU: begin
 					
 					if(inst[14:12] == 3'b010 || inst[14:12] == 3'b011) begin
-						//Instructions that involve subtract operation
+						//Instructions that involve subtract operation (SLTI and SLTIU respectively)
 						//ALU control signal
 						//set LSB 3 bits to the "funct3" field
 						//bit 3 = 1'b1 to indicate stubract operation
