@@ -322,6 +322,9 @@ module ctrl(
 					//Data memory write enalbe signal
 					//no value is written to data memory
 					d_mem_wr_en = 1'b0;
+					//data memory size
+					//data is not written to data memory
+					d_mem_size = 2'bxx;
 					//JAL instruction
 					//not valid
 					jal = 1'b0;
@@ -349,6 +352,9 @@ module ctrl(
 					//Data memory write enalbe signal
 					//No value is written to data memory
 					d_mem_wr_en = 1'b0;
+					//data memory size
+					//data is not written to data memory
+					d_mem_size = 2'bxx;
 					//JAL instruction					
 					jal = 1'b1;
 					//JALR instruction
