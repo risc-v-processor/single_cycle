@@ -90,7 +90,8 @@ d_mem_wr_en : %b, d_mem_size : %b, jal : %b, jalr : %b\n", inst, alu_ctrl, reg_f
 		end
 		
 		$display ("\n*-------------------------------------------------*\n");
-
+		
+		$finish;
 
 	end
       
