@@ -112,10 +112,24 @@ module mem(
 		
 		//write data to memory
 		else if (wr_en == 1'b1) begin
-			mem[address] = data_in[7:0];
-			mem[address + 1] = data_in[15:8];
-			mem[address + 2] = data_in[23:16];
-			mem[address + 3] = data_in[31:24];
+			case (mem_size)
+				`WORD: begin
+					mem[address] = data_in[7:0];
+					mem[address + 1] = data_in[15:8];
+					mem[address + 2] = data_in[23:16];
+					mem[address + 3] = data_in[31:24];
+				end
+				
+				`HALF_WORD: begin
+					mem[address] = data_in[7:0];
+					mem[address + 1] = data_in[15:8];
+				end
+				
+				`BYTE: begin
+					mem[address] = data_in[7:0];
+				end
+				
+			endcase
 		end
 	end
 

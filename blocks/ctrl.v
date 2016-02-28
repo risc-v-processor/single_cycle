@@ -5,6 +5,13 @@
 `define INSTRUCTION_WIDTH 32
 //ALU control signal width
 `define ALU_CTRL_WIDTH 5
+//memory size
+//word (32 bits)
+`define WORD 2'b10
+//half word (16 bits)
+`define HALF_WORD 2'b01
+//byte (8 bits)
+`define BYTE 2'b00
 
 //Instruction types
 //R-type
@@ -46,10 +53,10 @@ module ctrl(
 	output reg [1:0] reg_file_wr_back_sel,
 	//ALU operand select signal
 	output reg alu_op2_sel,
-	//Data memory read enable signal
-	output reg d_mem_rd_en,
-	//Data memory write enalbe signal
+	//Data memory write enable
 	output reg d_mem_wr_en,
+	//Data memory sign or zero extend
+	output reg d_mem_sz_ex,
 	/*Data memory size
 	(10) 32 bit value
 	(01) 16 bit value
@@ -62,6 +69,7 @@ module ctrl(
 	//JALR instruction
 	output reg jalr, 
 	//inputs
+	//instruction
 	input [(`INSTRUCTION_WIDTH - 1):0] inst
 );
 	
@@ -92,15 +100,15 @@ module ctrl(
 					//ALU operand select signal
 					//the second operand for the ALU is obtained from the register file
 					alu_op2_sel = 1'b0;
-					//Data memory read enable signal
-					//Data memory is not read
-					d_mem_rd_en = 1'b0;
-					//Data memory write enable signal
-					//Data memory is not written to
+					//Data memory write enalbe signal
+					//nothing is written to data memory
 					d_mem_wr_en = 1'b0;
 					//data memory size
-					//No data is written to or read from data memory
+					//don't care
 					d_mem_size = 2'bxx;
+					//data memory sign or zero extend
+					//don't care
+					d_mem_sz_ex = 1'bx;
 					//JAL instruction
 					//not valid
 					jal = 1'b0;
@@ -123,15 +131,15 @@ module ctrl(
 					//ALU operand select signal
 					//select the sign or zero extended operand
 					alu_op2_sel = 1'b1;
-					//Data memory read enable signal
-					//nothing is read from data memory
-					d_mem_rd_en = 1'b0;
 					//Data memory write enalbe signal
 					//noting is written to data memory
 					d_mem_wr_en = 1'b0;
 					//data memory size
 					//don't care
 					d_mem_size = 2'bxx;
+					//data memory sign or zero extend
+					//don't care
+					d_mem_sz_ex = 1'bx;
 					//JAL instruction
 					//not valid
 					jal = 1'b0;
@@ -155,15 +163,16 @@ module ctrl(
 					//ALU operand select signal
 					//select the sign or zero extended operand
 					alu_op2_sel = 1'b1;
-					//Data memory read enable signal
-					//The value is loaded from data memory
-					d_mem_rd_en = 1'b1;
 					//Data memory write enalbe signal
 					//no value is written to data memory
 					d_mem_wr_en = 1'b0;
 					//data memory size
 					//size depends on the instruction
 					d_mem_size = inst[13:12];
+					//data memory sign or zero extend
+					//depends on the instruction
+					//d_mem_sz_ex = 1'b0 for (LBU and LHU) and 1'b0 for the rest
+					d_mem_sz_ex = !inst[14];
 					//JAL instruction
 					//not valid
 					jal = 1'b0;
@@ -201,15 +210,15 @@ module ctrl(
 					//ALU operand select signal
 					//select the sign or zero extended immediate value
 					alu_op2_sel = 1'b1;
-					//Data memory read enable signal
-					//no value is read from data memory
-					d_mem_rd_en = 1'b0;
 					//Data memory write enalbe signal
 					//no value is written back to data memory
 					d_mem_wr_en = 1'b0;
 					//data memory size
 					//data is not written to or read from data memory
 					d_mem_size = 2'bxx;
+					//data memory sign or zero extend
+					//don't care
+					d_mem_sz_ex = 1'bx;
 					//JAL instruction
 					//not valid
 					jal = 1'b0;
@@ -235,15 +244,15 @@ module ctrl(
 					//ALU operand select signal
 					//select the sign or zero extended immediate value
 					alu_op2_sel = 1'b1;
-					//Data memory read enable signal
-					//no data is read from data memory
-					d_mem_rd_en = 1'b0;
 					//Data memory write enable signal
 					//Data is written to data memory
 					d_mem_wr_en = 1'b1;
 					//data memory size
 					//data is written to data memory
 					d_mem_size = inst[13:12];
+					//data memory sign or zero extend
+					//don't care
+					d_mem_sz_ex = 1'bx;
 					//JAL instruction
 					//not valid
 					jal = 1'b0;
@@ -269,15 +278,15 @@ module ctrl(
 					//ALU operand select signal
 					//select the operand obtained from register file
 					alu_op2_sel = 1'b0;
-					//Data memory read enable signal
-					//no data is read from data memory
-					d_mem_rd_en = 1'b0;
 					//Data memory write enable signal
 					//Data is not written to data memory
 					d_mem_wr_en = 1'b0;
 					//data memory size
 					//data is not written to data memory
 					d_mem_size = 2'bxx;
+					//data memory sign or zero extend
+					//don't care
+					d_mem_sz_ex = 1'bx;
 					//JAL instruction
 					//not valid
 					jal = 1'b0;
@@ -316,15 +325,15 @@ module ctrl(
 					//ALU operand select signal
 					//select the sign or zero extended operand for both LUI and AUIPC
 					alu_op2_sel = 1'b1;
-					//Data memory read enable signal
-					//No value is loaded from data memory
-					d_mem_rd_en = 1'b0;
 					//Data memory write enalbe signal
 					//no value is written to data memory
 					d_mem_wr_en = 1'b0;
 					//data memory size
 					//data is not written to data memory
 					d_mem_size = 2'bxx;
+					//data memory sign or zero extend
+					//don't care
+					d_mem_sz_ex = 1'bx;
 					//JAL instruction
 					//not valid
 					jal = 1'b0;
@@ -346,15 +355,15 @@ module ctrl(
 					//ALU operand select signal
 					//No operand is to be selected
 					alu_op2_sel = 1'bx;
-					//Data memory read enable signal
-					//No value is loaded from data memory
-					d_mem_rd_en = 1'b0;
 					//Data memory write enalbe signal
 					//No value is written to data memory
 					d_mem_wr_en = 1'b0;
 					//data memory size
 					//data is not written to data memory
 					d_mem_size = 2'bxx;
+					//data memory sign or zero extend
+					//don't care
+					d_mem_sz_ex = 1'bx;
 					//JAL instruction					
 					jal = 1'b1;
 					//JALR instruction
@@ -377,9 +386,6 @@ module ctrl(
 					//ALU operand select signal
 					//don't care
 					alu_op2_sel = 1'bx;
-					//Data memory read enable signal
-					//no data is read from data memory
-					d_mem_rd_en = 1'b0;
 					//Data memory write enable signal
 					//no data is written to data memory
 					d_mem_wr_en = 1'b0;
@@ -387,6 +393,9 @@ module ctrl(
 					//data is not written to data memory
 					//don't care
 					d_mem_size = 2'bxx;
+					//data memory sign or zero extend
+					//don't care
+					d_mem_sz_ex = 1'bx;
 					//JAL instruction
 					//not valid
 					jal = 1'b0;
@@ -413,9 +422,6 @@ module ctrl(
 			//ALU operand select signal
 			//don't care
 			alu_op2_sel = 1'bx;
-			//Data memory read enable signal
-			//no data is read from data memory
-			d_mem_rd_en = 1'b0;
 			//Data memory write enable signal
 			//no data is written to data memory
 			d_mem_wr_en = 1'b0;
@@ -423,6 +429,9 @@ module ctrl(
 			//data is not written to data memory
 			//don't care
 			d_mem_size = 2'bxx;
+			//data memory sign or zero extend
+			//don't care
+			d_mem_sz_ex = 1'bx;
 			//JAL instruction
 			//not valid
 			jal = 1'b0;

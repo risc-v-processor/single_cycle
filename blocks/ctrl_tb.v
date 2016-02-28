@@ -16,7 +16,7 @@ module ctrl_tb;
 	wire reg_file_wr_en;
 	wire [1:0] reg_file_wr_back_sel;
 	wire alu_op2_sel;
-	wire d_mem_rd_en;
+	wire d_mem_sz_ex;
 	wire d_mem_wr_en;
 	wire [1:0] d_mem_size;
 	wire jal;
@@ -28,7 +28,7 @@ module ctrl_tb;
 		.reg_file_wr_en(reg_file_wr_en), 
 		.reg_file_wr_back_sel(reg_file_wr_back_sel), 
 		.alu_op2_sel(alu_op2_sel), 
-		.d_mem_rd_en(d_mem_rd_en), 
+		.d_mem_sz_ex(d_mem_sz_ex), 
 		.d_mem_wr_en(d_mem_wr_en), 
 		.d_mem_size(d_mem_size), 
 		.jal(jal), 
@@ -84,9 +84,9 @@ module ctrl_tb;
 			#5;
 			//report the control signals generated
 			$display ("Input Instruction : %x \n\
-alu_ctrl : %b, reg_file_wr_en : %b, reg_file_wr_back_sel : %b, alu_op2_sel : %b, d_mem_rd_en : %b, \
+alu_ctrl : %b, reg_file_wr_en : %b, reg_file_wr_back_sel : %b, alu_op2_sel : %b, d_mem_sz_ex : %b, \
 d_mem_wr_en : %b, d_mem_size : %b, jal : %b, jalr : %b\n", inst, alu_ctrl, reg_file_wr_en, 
-				reg_file_wr_back_sel, alu_op2_sel, d_mem_rd_en, d_mem_wr_en, d_mem_size, jal, jalr);
+				reg_file_wr_back_sel, alu_op2_sel, d_mem_sz_ex, d_mem_wr_en, d_mem_size, jal, jalr);
 		end
 		
 		$display ("\n*-------------------------------------------------*\n");

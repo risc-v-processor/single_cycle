@@ -60,54 +60,54 @@ module mem_tb;
 
 		//reset
 		rst = 1'b1;
-		#15
+		#20
 		rst = 1'b0;
 		$display ($time);
 		
+		
 		//write data into memory
-		#10;
+		#5;
 		wr_en = 1'b1;
 		address = 0;
 		data_in = 32'h000000FF;
 		
-		#10;
+		#20;
 		wr_en = 1'b1;
 		address = 4;
 		mem_size = `BYTE;
 		data_in = 32'h0000FFFF;
 		
-		#10;
+		#20;
 		wr_en = 1'b1;
 		address = 8;
 		mem_size = `WORD;
 		data_in = 32'h00FFFFFF;
 		
 		//read back the values
-		//read the sign extended byte value at address = 1
-		#10;
+		//read the sign extended byte value at address = 0
+		#20;
 		wr_en = 1'b0;
 		address = 0;
 		mem_size = `BYTE;
 		sz_ex = 1'b1;
 		
-		//read the zero extended half word value at address = 8
-		#5;
-		address = 8;
+		//read the zero extended half word value at address = 4
+		#20;
+		address = 4;
 		mem_size = `HALF_WORD;
 		sz_ex = 1'b0;
 		
-		//write a byte value 
-		#5;
+		//write a value to memory 
+		#20;
 		address = 12;
 		mem_size = `WORD;
 		wr_en = 1'b1;
 		data_in = 32'hFFFFFFFF;
 		
 		//read back the unsigned half word value
-		#10;
+		#20;
 		mem_size = `HALF_WORD;
-		wr_en = 1'b0;
-		 
+		wr_en = 1'b0;		 
 				 
 		//terminate simulation
 		#30;
@@ -121,4 +121,3 @@ module mem_tb;
     end
       
 endmodule
-
