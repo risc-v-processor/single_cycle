@@ -1,27 +1,5 @@
 `timescale 1ns / 1ps
 
-////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer:
-//
-// Create Date:   22:58:27 02/24/2016
-// Design Name:   pc_block
-// Module Name:   C:/Users/Nagarathna/PC_BLOCK/pc_block_tb.v
-// Project Name:  PC_BLOCK
-// Target Device:  
-// Tool versions:  
-// Description: 
-//
-// Verilog Test Fixture created by ISE for module: pc_block
-//
-// Dependencies:
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-////////////////////////////////////////////////////////////////////////////////
-
 module pc_block_tb;
 
 	// Inputs
@@ -41,7 +19,7 @@ module pc_block_tb;
 	);
 
 	initial begin
-	$monitor($time, " reset=%b current address  = %b ",rst,curr_addr );
+		$monitor($time, " reset=%b current address  = %b ",rst,curr_addr);
 		// Initialize Inputs
 		rst = 0;
 		clk = 0;
@@ -59,7 +37,7 @@ module pc_block_tb;
 
 	end
 	always begin
-	#50 clk = !clk ;
-      end
-endmodule
+		#50 clk = !clk ;
+	end
 
+endmodule

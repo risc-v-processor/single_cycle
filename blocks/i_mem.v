@@ -21,8 +21,7 @@ module i_mem(
 	//write enable
 	input i_mem_wr_en,
 	//data to be written to memory
-	input [(`BUS_WIDTH - 1) : 0] i_mem_wr_data
-	
+	input [(`BUS_WIDTH - 1) : 0] i_mem_wr_data	
 );
 
 	//memory size to use (not exposed)
@@ -36,7 +35,7 @@ module i_mem(
 		.clk(clk),
 		.rst(rst),
 		.address(i_mem_address),
-		.data_in(mem_wr_data),
+		.data_in(i_mem_wr_data),
 		.wr_en(i_mem_wr_en),
 		.mem_size(mem_size),
 		.sz_ex(mem_sz_ex)
@@ -44,11 +43,11 @@ module i_mem(
 	
 	//Sequential logic
 	always @ (posedge clk) begin
-		if (rst) begin
+		if (rst == 1'b1) begin
 			//set the memory access size to the default value
-			mem_size = `WORD;
+			mem_size <= `WORD;
 			//set sign and zero extend to x
-			mem_sz_ex = 1'bx;
+			mem_sz_ex <= 1'bx;
 		end
 	end
 	

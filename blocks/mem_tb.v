@@ -118,6 +118,6 @@ module mem_tb;
 	always begin
 		//generate clock signal
 		#10 clk = ~clk;
-    end
+	end
       
 endmodule
