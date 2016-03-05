@@ -19,23 +19,27 @@ module pc_block_tb;
 	);
 
 	initial begin
-		$monitor($time, " reset=%b current address  = %b ",rst,curr_addr);
+		$monitor($time, " reset=%b current address  = %d, next address = %d",rst,curr_addr, next_addr);
 		// Initialize Inputs
 		rst = 0;
 		clk = 0;
+		
+		// Wait 100 ns for global reset to finish
+		#100; 
+		
+		// Add stimulus here
 		next_addr = 32'h1111;
 		
 		#99 rst = 1;      
 		
 		#100 rst = 0;
-		next_addr = 32'h4444;
+		next_addr = 32'h4444;   
 		
-		// Wait 100 ns for global reset to finish
-		#100;  
-        
-		// Add stimulus here
-
+		#200;  
+		$finish; 
+		
 	end
+	
 	always begin
 		#50 clk = !clk ;
 	end
