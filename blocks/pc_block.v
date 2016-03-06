@@ -1,8 +1,7 @@
 `timescale 1ns / 1ps
 
 //macros
-`define REGISTER_WIDTH 32
-`define PC_INIT_VAL 32'b0
+`define BUS_WIDTH 32
 
 module pc_block(
 	//inputs
@@ -11,19 +10,19 @@ module pc_block(
     //clock
     input clk,
     //next address 
-	input [(`REGISTER_WIDTH-1):0] next_addr,
+	input [(`BUS_WIDTH-1):0] next_addr,
 	//current address
-	output reg [(`REGISTER_WIDTH-1):0] curr_addr 
+	output reg [(`BUS_WIDTH-1):0] curr_addr 
 );
 
 	//sequential logic
 	always @(posedge clk) begin
-		if (rst) begin
-			curr_addr <= `PC_INIT_VAL;
+		if (rst == 1'b1) begin
+			curr_addr <= {`BUS_WIDTH{1'b0}};
 		end
 		
 		else begin 
-			curr_addr <= next_addr ;
+			curr_addr <= next_addr;
 		end
 	end	 
 	 

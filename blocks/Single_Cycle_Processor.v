@@ -27,8 +27,8 @@ module Single_Cycle_Processor(
 );
  
 	//Instantiation of PC_BLOCK
-    wire [`BUS_WIDTH-1:0] next_addr_t ;
-    wire [`BUS_WIDTH-1:0] curr_addr_t ;
+    wire [(`BUS_WIDTH-1):0] next_addr_t ;
+    wire [(`BUS_WIDTH-1):0] curr_addr_t ;
 	 
     pc_block  pc_bloc_t ( .rst(rst_t), 
 						  .clk(clk_t) ,
@@ -36,21 +36,21 @@ module Single_Cycle_Processor(
                           .curr_addr(curr_addr_t) );
 	
 	//Instantiation of instruction memory
-	wire [`BUS_WIDTH-1:0] inst_t;
+	wire [(`BUS_WIDTH-1):0] inst_t;
 	reg i_mem_wr_en_t;
-	reg [`BUS_WIDTH-1:0] i_mem_wr_data_t;
+	reg [(`BUS_WIDTH-1):0] i_mem_wr_data_t;
 	
 	i_mem i_mem_t ( .inst(inst_t),
-					   .i_mem_address(curr_addr_t),
-					   .clk(clk_t),
-					   .rst(rst_t),
-					   .i_mem_wr_en(i_mem_wr_en_t),
-					   .i_mem_wr_data(i_mem_wr_data_t) );
+					.i_mem_address(curr_addr_t),
+					.clk(clk_t),
+					.rst(rst_t),
+					.i_mem_wr_en(i_mem_wr_en_t),
+					.i_mem_wr_data(i_mem_wr_data_t) );
               
   
 	//Instantiation of adder (PC + 4)
-	reg [`BUS_WIDTH-1:0] val_2_PC_adder = 32'd4;
-	wire [`BUS_WIDTH-1:0] Add_4_Out_t;
+	reg [(`BUS_WIDTH-1):0] val_2_PC_adder = 32'd4;
+	wire [(`BUS_WIDTH-1):0] Add_4_Out_t;
 	 
 	adder adder_t ( .val_1(curr_addr_t) , 
 					.val_2(val_2_PC_adder) , 
@@ -109,8 +109,8 @@ module Single_Cycle_Processor(
 	//Implementation of 2:1 MUX  (second operand to ALU)
 	reg [(`BUS_WIDTH-1):0] Operand2_t;
 	
-	always @ (alu_op2_sel_t) begin 
-		case (alu_op2_sel_t )
+	always @ (*) begin 
+		case (alu_op2_sel_t)
 			1'b0 : Operand2_t = reg_data_2_t;
 			1'b1 : Operand2_t = sz_ex_val_t ;
 		endcase
@@ -142,7 +142,7 @@ module Single_Cycle_Processor(
 	
 	//Implemantation of pc_mux_1
 	reg [(`BUS_WIDTH-1):0] pc_mux1_Out_t ;
-	always @ (pc_mux1_sel_t) begin
+	always @ (*) begin
 		case (pc_mux1_sel_t)
 			1'b0 : pc_mux1_Out_t = Add_4_Out_t;
 			1'b1 : pc_mux1_Out_t = Add_Out_t;
@@ -153,7 +153,7 @@ module Single_Cycle_Processor(
 	//Implementation of pc_mux_2	
 	reg [(`BUS_WIDTH-1):0] pc_mux2_Out_t;
 	
-	always @ (jalr_t) begin
+	always @ (*) begin
 		case (jalr_t)
 			1'b0 : pc_mux2_Out_t = pc_mux1_Out_t;
 			1'b1 : pc_mux2_Out_t = ALU_Out_t ;
@@ -180,20 +180,18 @@ module Single_Cycle_Processor(
 
 
 	//Implementation of 2:4 mux (writeback path to register file) 
-	always @ (reg_file_wr_back_sel_t) begin 
-		if(reg_file_wr_back_sel_t == 2'b00)
-			wr_reg_data_t = ALU_Out_t ;
-		else if(reg_file_wr_back_sel_t == 2'b01)
-			wr_reg_data_t = d_mem_rd_data_t ;
-		else if (reg_file_wr_back_sel_t == 2'b10)
-			wr_reg_data_t = Add_4_Out_t ;
-		else
-			wr_reg_data_t = Add_Out_t ;
+	always @ (*) begin 
+		case(reg_file_wr_back_sel_t)
+			2'b00 :	wr_reg_data_t = ALU_Out_t;
+			2'b01 : wr_reg_data_t = d_mem_rd_data_t;
+			2'b10 : wr_reg_data_t = Add_4_Out_t;
+			2'b11 : wr_reg_data_t = Add_Out_t ;
+		endcase
 	end
 
 
 	always @ (posedge clk_t) begin
-		if (rst_t == 1'b0) begin
+		if (rst_t == 1'b1) begin
 			//instruction memory signals
 			i_mem_wr_en_t = 1'b0;
 			i_mem_wr_data_t = 32'b0;
