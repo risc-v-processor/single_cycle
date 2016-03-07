@@ -5,8 +5,8 @@
 `define BUS_WIDTH 32
 //Byte addressable memory
 //Memory vector size = Total size/8
-//(2Kb memory)
-`define MEM_VECTOR_SIZE 256
+//(1Kb memory)
+`define MEM_VECTOR_SIZE 64
 //memory size
 //word (32 bits)
 `define WORD 2'b10
@@ -108,11 +108,11 @@ module mem(
 			
 			//TEST !!! - (initialize memory with instructions)
 			//add 1 to r2 (ADDI r2,r2,1)
-			{mem[3], mem[2], mem[1], mem[0]}  = 32'h00110113;
+			{mem[3], mem[2], mem[1], mem[0]}  <= 32'h00110113;
 			//store r2 to mem_map_io (SW r0, r2, 256)
-			{mem[7], mem[6], mem[5], mem[4]} = 32'h10202023;
+			{mem[7], mem[6], mem[5], mem[4]} <= 32'h10202023;
 			//jump back to the first instruction (JAL r0, -8)
-			{mem[11], mem[10], mem[9], mem[8]} = 32'hFF9FF06F;
+			{mem[11], mem[10], mem[9], mem[8]} <= 32'hFF9FF06F;
 			//TEST !!!
 			
 			
@@ -126,19 +126,19 @@ module mem(
 		else if (wr_en == 1'b1) begin
 			case (mem_size)
 				`WORD: begin
-					mem[address] = data_in[7:0];
-					mem[address + 1] = data_in[15:8];
-					mem[address + 2] = data_in[23:16];
-					mem[address + 3] = data_in[31:24];
+					mem[address] <= data_in[7:0];
+					mem[address + 1] <= data_in[15:8];
+					mem[address + 2] <= data_in[23:16];
+					mem[address + 3] <= data_in[31:24];
 				end
 				
 				`HALF_WORD: begin
-					mem[address] = data_in[7:0];
-					mem[address + 1] = data_in[15:8];
+					mem[address] <= data_in[7:0];
+					mem[address + 1] <= data_in[15:8];
 				end
 				
 				`BYTE: begin
-					mem[address] = data_in[7:0];
+					mem[address] <= data_in[7:0];
 				end
 				
 			endcase

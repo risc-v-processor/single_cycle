@@ -4,6 +4,7 @@
 //macros
 //Bus width
 `define BUS_WIDTH 32
+`define MEM_MAP_IO_ADDRESS 64
 
 module d_mem(
 	//Outputs
@@ -34,11 +35,11 @@ module d_mem(
 	//memory mapped I/O write enable
 	reg mem_map_io_wr_en;
 	//data read from either "mem" instance or "memory mapped I/O"
-	reg [(`BUS_WIDTH-1):0] mem_rd_data;
+	wire [(`BUS_WIDTH-1):0] mem_rd_data;
 
 	//combinational logic
 	always @ (*) begin
-		if (d_mem_address == 256) begin
+		if (d_mem_address == `MEM_MAP_IO_ADDRESS) begin
 			//read from memory mapped I/O
 			d_mem_rd_data = mem_map_io;
 			
@@ -69,6 +70,7 @@ module d_mem(
 		else if (mem_map_io_wr_en == 1'b1) begin
 			mem_map_io <= d_mem_wr_data;
 		end
+		
 	end
 	
 	//creata an instance of mem
