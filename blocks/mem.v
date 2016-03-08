@@ -109,8 +109,8 @@ module mem(
 			//TEST !!! - (initialize memory with instructions)
 			//add 1 to r2 (ADDI r2,r2,1)
 			{mem[3], mem[2], mem[1], mem[0]}  <= 32'h00110113;
-			//store r2 to mem_map_io (SW r0, r2, 256)
-			{mem[7], mem[6], mem[5], mem[4]} <= 32'h10202023;
+			//store r2 to mem_map_io (SW r0, r2, 64)
+			{mem[7], mem[6], mem[5], mem[4]} <= 32'h04202023;
 			//jump back to the first instruction (JAL r0, -8)
 			{mem[11], mem[10], mem[9], mem[8]} <= 32'hFF9FF06F;
 			//TEST !!!

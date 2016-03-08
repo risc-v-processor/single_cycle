@@ -26,9 +26,9 @@ module Single_Cycle_processor_tb;
         
 		// Add stimulus here
 		$monitor ($time, "\t clk = %b, rst = rst_t = %b, mem_map_io = %d,\t curr_addr_t = %d,\t \
-next_addr_t = %d,\t inst_t = %x,\t pc_mux1_sel_t = %b,\t jalr_t = %b,\t Add_4_Out_t = %d", 
+next_addr_t = %d,\t inst_t = %x,\t pc_mux1_sel_t = %b,\t jalr_t = %b,\t Add_4_Out_t = %d, mem_map_io = %d", 
 clk_t, rst_t, mem_map_io_t, uut.curr_addr_t, uut.next_addr_t, uut.inst_t, uut.pc_mux1_sel_t, 
-uut.jalr_t, uut.Add_4_Out_t);
+uut.jalr_t, uut.Add_4_Out_t, uut.d_mem_t.mem_map_io);
 		
 		//reset the design
 		rst_t = 1'b1;
